@@ -1,2 +1,2 @@
 # CodingExercises
-Sorry, nothing interesting here: This repo just serves as a backup of coding drills in Java/Scala
+This repo contains code samples/examples written in Java/Scala

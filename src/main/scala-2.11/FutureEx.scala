@@ -2,66 +2,132 @@
   * Created by petec on 8/7/16.
   */
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import concurrent.ExecutionContext.Implicits.global
+import concurrent.{Await, Future}
+import concurrent.duration._
+import util.{Failure, Success}
+import util.Random
 
-object FutureEx {
+object FutureBlock extends App {
 
-  // Ex1
-  def nextFtr(i: Int = 0): Future[Int] = Future {
-    def rand(x: Int) = util.Random.nextInt(x)
-    Thread.sleep(rand(5000)) // Avoid in production code.
-    if (rand(3) > 0) (i+1) else throw new Exception
-  }
+    def sleep(time: Long) = { Thread.sleep(time) }
+    implicit val basetime = System.currentTimeMillis()
 
-  // Ex2
-  def cityTemp(name: String): Double = {
-    val url = "http://api.openweathermap.org/data/2.5/weather"
-    val cityUrl = s"$url?q=$name&appid=3835f64c2f77cc8d0b6ebb4b2a88e714"
-    val json = io.Source.fromURL(cityUrl).mkString.trim
-    val pattern = """.*"temp":([\d.]+).*""".r
-    val pattern(temp) = json
-    temp.toDouble
-  }
-
-  def main(args: Array[String]) = {
-
-//    val cityTemps = Future sequence Seq(
-//      Future(cityTemp("Fresno")), Future(cityTemp("Tempe"))
-//    )
-//
-//    println("Sleeping 20 ..")
-//    Thread.sleep(20000)
-//    println(s"Woke up. cityTemps: $cityTemps")
-//
-//    cityTemps onFailure {
-//      case _ => println("Failed")
-//    }
-//
-//    cityTemps onSuccess {
-//      case Seq(x,y) if x > y => println(s"Fresno is warmer: $x K")
-//      case Seq(x,y) if y >x => println(s"Tempe is warmer: $y K")
-//      case Seq(x,_) => println(s"Temperature is the same: $x K")
-//    }
-
-    import scala.concurrent._
-    import ExecutionContext.Implicits.global
-    import scala.concurrent.duration._
-    import scala.util.{Failure, Success}
-
-    val MaxTime = Duration(10, SECONDS)
-
-    val firstOccurrence: Future[Int] = Future {
-      val source = scala.io.Source.fromFile("/Users/petec/notebooks/myText.txt")
-      val res = source.toSeq.indexOfSlice("myKeyWord")
-      res
+    val f = Future {
+      Thread.sleep(500)
+      1+1
     }
 
-    firstOccurrence onComplete {
-      case Success(pos) => println(s"Position: $pos")
-      case Failure(f) => println(s"Search failed: ${f.getMessage}")
-    }
+    val result = Await.result(f, 1 second)
+    println(result)
 
-    Thread.sleep(5000) // Prevent program from exiting before Future is completed
+    sleep(1000) // Prevent program from exiting before Future is completed
+}
+
+object FutureOnComplete extends App {
+
+  def sleep(time: Long) = { Thread.sleep(time) }
+
+  println("Starting calculation")
+  val f = Future {
+    sleep(Random.nextInt(500))
+    42
   }
+
+  println("Before onComplete")
+  f.onComplete {
+    case Success(value) => println(s"Got the callback, meaning = $value")
+    case Failure(e) => e.printStackTrace
+  }
+
+  // Do rest of work ..
+  println("A ..."); sleep(100)
+  println("B ..."); sleep(100)
+  println("C ..."); sleep(100)
+  println("D ..."); sleep(100)
+  println("E ..."); sleep(100)
+  println("F ..."); sleep(100)
+
+  sleep(1000)
+}
+
+object FutureOnSuccessAndFailure extends App {
+
+  def sleep(time: Long) = { Thread.sleep(time) }
+
+  val f = Future {
+    sleep(Random.nextInt(500))
+    if (Random.nextInt(500) > 250) throw new Exception("Yikes!") else 42
+  }
+
+  f onSuccess {
+    case result => println(s"Success: $result")
+  }
+
+  f onFailure {
+    case t => println(s"Exception: ${t.getMessage}")
+  }
+
+  // Do rest of work ..
+  println("A ..."); sleep(100)
+  println("B ..."); sleep(100)
+  println("C ..."); sleep(100)
+  println("D ..."); sleep(100)
+  println("E ..."); sleep(100)
+  println("F ..."); sleep(100)
+
+
+  sleep(2000)
+}
+
+object FutureT extends App {
+
+  def sleep(time: Long) = { Thread.sleep(time) }
+  implicit val basetime = System.currentTimeMillis()
+
+  def longRunningComputation(i: Int): Future[Int] = Future {
+    sleep(100)
+    i + 1
+  }
+
+  longRunningComputation(11).onComplete {
+    case Success(result) => println(s"result = $result")
+    case Failure(e) => e.printStackTrace
+  }
+
+  // Do rest of work ..
+  println("A ..."); sleep(100)
+  println("B ..."); sleep(100)
+  println("C ..."); sleep(100)
+  println("D ..."); sleep(100)
+  println("E ..."); sleep(100)
+  println("F ..."); sleep(100)
+
+  sleep(1000) // Prevent JVM from shutting down
+}
+
+object MultiParallelTasks extends App {
+
+  def sleep(time: Long) = { Thread.sleep(time) }
+  implicit val basetime = System.currentTimeMillis()
+
+  println("Starting futures ..")
+  val result1 = Future { sleep(Random.nextInt(500)); 1 }
+  val result2 = Future { sleep(Random.nextInt(500)); 2 }
+  val result3 = Future { sleep(Random.nextInt(500)); 3 }
+
+  println("Before for-comprehension")
+  val result = for {
+    r1 <- result1
+    r2 <- result2
+    r3 <- result3
+  } yield r1+r2+r3
+
+  println("Before onSuccess")
+  result.onSuccess {
+    case result => println(s"total = $result")
+  }
+
+  println("Before sleep at the end")
+  sleep(1000)
 }
