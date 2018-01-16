@@ -18,6 +18,7 @@ class Sorting {
             a[i+1] = key;
         }
     };
+
     static void isDriv() {
         int [] a = {1,6,9,2,4,8,5,9,2};
 
@@ -44,6 +45,7 @@ class Sorting {
 
         for (int i = 0; i < n1; ++i) { L[i] = a[p+i]; }
         for (int i = 0; i < n2; ++i) { R[i] = a[q+i+1]; }
+
         // Add sentinels (assume only positive ints in orig. array)
         L[n1] = Integer.MAX_VALUE;
         R[n2] = Integer.MAX_VALUE;

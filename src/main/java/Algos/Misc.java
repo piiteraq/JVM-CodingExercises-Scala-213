@@ -65,21 +65,39 @@ public class Misc {
         }
     }
 
+    // Alternative permutation generator
+    private static void permutation(String str) {
+        permutation(str, "");
+    }
+
+    private static void permutation(String str, String prefix) {
+        if (str.length() == 0 ) {
+            System.out.println(prefix);
+        } else {
+            for (int i = 0; i < str.length(); i++) {
+                String rem = str.substring(0, i) + str.substring(i + 1);
+                permutation(rem, prefix + str.charAt(i));
+            }
+        }
+    }
+
+
     // Generate solution for the 8-Queen problem
     // Return true if a queen can be placed in kth row and ith column
     public static boolean place(int k, int i, int x[]) {
         num_attempts++;
         for (int j=0; j < k; j++) {
             if ((x[j]==i) || (Math.abs(x[j]-i) == Math.abs(j-k))) {
-                //System.out.println("Invalid placement: (" + k + ", " + i + ")");
+                System.out.println("Invalid placement: (" + (k+1) + ", " + (i+1) + ")");
                 return false;
             }
         }
+        System.out.println("Valid placement: (" + (k+1) + ", " + (i+1) + ")");
         return true;
     }
 
     // Using backtracking, this procedure prints all possible
-    // placements of n queens on an nxn chessboard so that they
+    // placements of n queens on an n*n chessboard so that they
     // are non-attacking.
     static int sol_count = 0;
     static int num_attempts = 0;
@@ -90,11 +108,19 @@ public class Misc {
                 successful_placements++;
                 x[k] = i;
                 if (k==n-1) {
-                    System.out.print("Solution #" + (++sol_count) + ": ");
+                    System.out.print("==== Solution #" + (++sol_count) + ": ");
                     for (int j=0; j<n; j++)
                         System.out.print(x[j]+1 + " ");
-                    System.out.println();
+                    System.out.println(" ====");
                 } else {
+
+                    System.out.println("Partial sol: ");
+                    for (int ii=0; ii <= k; ii++) {
+                        System.out.print((x[ii]+1) + " ");
+                    }
+                    System.out.println();
+
+
                     NQueens(k+1, n, x);
                 }
             }
@@ -103,21 +129,22 @@ public class Misc {
 
 
     // Sub-sum problem: Find all sets of 'm' integers in vector that sum up to 'sum'
+    // s: what has been summed up so far using subset of addends in x[0] .. x[k-1]
+    // r: residual part of sum that needs to be constructed from subset of addends in sub-array x[k] .. x[N]
     public static void sumOfSub(int s, int k, int r, int m, ArrayList<Integer> x, ArrayList<Integer> w) {
         x.set(k,1);
         if (s + w.get(k) == m) { // Subset found
             for (int j=0; j <= k; j++) {
-                //System.out.print(x.get(j) + " ");
-                if (x.get(j) == 1 && j < k)
-                    System.out.print(w.get(j) + " + ");
-                else if (x.get(j) == 1)
-                    System.out.print(w.get(j) + " = " + m);
+                if (x.get(j) == 1) System.out.print(w.get(j) + ((j < k) ? " + " : ""));
             }
-            System.out.println();
+            System.out.println(" = " + m);
         } else if (s + w.get(k) + w.get(k+1) <= m) {
             sumOfSub(s+w.get(k), k+1, r-w.get(k), m, x, w);
         }
 
+        // 1. Make sure to explore possible solutions that do not include x[k]
+        // 2. Since array w is sorted, if sum so far + the next element of w exceeds
+        // the target sum, there are no additional solutions on this branch of the recursion tree.
         if ((s+r-w.get(k) >= m) && (s+w.get(k+1) <= m)) {
             x.set(k,0);
             sumOfSub(s, k+1, r-w.get(k), m, x, w);
@@ -126,8 +153,7 @@ public class Misc {
 
     // Fibonacci - naive approach
     public static long fibonacci(long i) {
-        if (i == 0) return 0;
-        if (i == 1) return 1;
+        if (i == 0 || i == 1) return i;
         return fibonacci(i - 1) + fibonacci(i - 2);
     }
 
@@ -138,7 +164,6 @@ public class Misc {
 
     public static long fibonacci_quick(int i, long[] memo) {
         if (i == 0 || i == 1) return i;
-
         if (memo[i] == 0) {
             memo[i] = fibonacci_quick(i - 1, memo) + fibonacci_quick(i - 2, memo);
         }
@@ -177,7 +202,7 @@ public class Misc {
             dig = old_seq.get(0);
 
             try {
-                Thread.sleep(1000L);
+                Thread.sleep(100L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -237,9 +262,9 @@ public class Misc {
         }
         for (int i = 0; i < str2.length(); i++) {
             if (!strMap2.containsKey(str2.charAt(i))) {
-                strMap1.put(str2.charAt(i), 1);
+                strMap2.put(str2.charAt(i), 1);
             } else {
-                strMap1.put(str2.charAt(i), strMap2.get(str2.charAt(i))  + 1);
+                strMap2.put(str2.charAt(i), strMap2.get(str2.charAt(i))  + 1);
             }
         }
 
@@ -260,11 +285,11 @@ public class Misc {
      */
     public static void main(String[] args) {
 
-        System.out.println("Is a permutation: " + isPermutationofOtherAlt("abd", "dba"));
+        //System.out.println("Is a permutation: " + isPermutationofOtherAlt("abd", "dba"));
 
         //System.out.println("Are chars unique: " + areCharsUnique("abs"));
 
-        //lookAndSay();
+        lookAndSay();
 
         //System.out.println(fibonacci_quick(50));
 
@@ -283,27 +308,28 @@ public class Misc {
 //		for (int i=0; i < w.size(); i++) x.add(0);
 //		// Sum of all weights to be passed along
 //		int weight_sum = 0;
-//		for (int i=0; i< w.size(); i++) weight_sum += w.get(i);
+//		for (int i=0; i < w.size(); i++) weight_sum += w.get(i);
 //		System.out.println("m = " + m + ", weight vector: " + w);
 //		sumOfSub(0, 0, weight_sum, m, x, w);
 
         //Test: NQueens problem
-//        final int n = 9;
-//        int x[] = new int[n];
-//        for (int i=0; i<n; i++) x[i] = -1;
-//        NQueens(0, n, x);
+//        final int N = 8;
+//        int x[] = new int[N];
+//        for (int i=0; i < N; i++) x[i] = -1;
+//        NQueens(0, N, x);
 //        System.out.println( "#placement attempts = " + num_attempts + ", #succesful placements = " +
 //                successful_placements + ", #solutions = " + sol_count );
 
         // Test: Towers of Hanoi
-//		final int num_disks = 3;
+//		final int num_disks = 10;
 //		move_disks(peg.A, peg.C, peg.B, num_disks, num_disks);
 
         // Test: Calculate permutations
+//        permutation("peter");
 //		System.out.println("===== Permutations =====");
-//		int N = 3; //Integer.parseInt(args[0]);
+//		int N = 3;
 //		int perm[] = new int[N];
-//		ArrayList<Character> arr = new ArrayList<Character>();
+//		ArrayList<Character> arr = new ArrayList<>();
 //		for (int i = 0; i < N; i++) {
 //			perm[i] = i;
 //			arr.add((char)(i+97));

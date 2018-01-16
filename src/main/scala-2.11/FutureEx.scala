@@ -117,7 +117,7 @@ object MultiParallelTasks extends App {
   val result3 = Future { sleep(Random.nextInt(500)); 3 }
 
   println("Before for-comprehension")
-  val result = for {
+  val result: Future[Int] = for {
     r1 <- result1
     r2 <- result2
     r3 <- result3

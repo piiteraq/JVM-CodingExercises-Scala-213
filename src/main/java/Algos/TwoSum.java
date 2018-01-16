@@ -3,16 +3,18 @@ package Algos;
 import java.util.Map;
 import java.util.HashMap;
 
+
+// Given an array of integers, return indices of the two numbers such that they
+// add up to a specific target. You may assume that each input would have exactly
+// one solution, and you may not use the same element twice.
 public class TwoSum {
 
+    // Brute force approach: O(N^2)
     public static int[] twoSum(int[] nums, int target) {
-
         int[] res = new int[2];
-
         int i=0, j=0;
         for (i=0; i < nums.length; i++) {
             for (j=i+1; j < nums.length; j++) {
-                //System.out.println(i + " " + j + " " + (nums[i]+nums[j]));
                 if (nums[i]+nums[j] == target) {
                     res[0] = i;
                     res[1] = j;
@@ -25,7 +27,6 @@ public class TwoSum {
         res[1] = -1;
         return res;
     }
-
 
     public static int[] twoSum1(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
@@ -55,7 +56,7 @@ public class TwoSum {
 
     public static void main(String[] args) {
         int [] nums = { 2, 6, 9, 3 };
-        int[] res = twoSum2(nums, 15);
+        int[] res = twoSum1(nums, 15);
         System.out.println(res[0] + ", " + res[1]);
     }
 
