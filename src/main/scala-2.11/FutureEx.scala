@@ -131,3 +131,32 @@ object MultiParallelTasks extends App {
   println("Before sleep at the end")
   sleep(1000)
 }
+
+object PromiseExample extends App {
+  import scala.concurrent.{ Future, Promise }
+  import scala.concurrent.ExecutionContext.Implicits.global
+
+  val p = Promise[Double]()
+  val f = p.future
+
+  val producer = Future {
+    val r = Math.PI
+    println(s"Producer adding $r to promise")
+    p success r
+    println("Producer continuing with other work ..")
+    Thread.sleep(2000)
+  }
+
+  val consumer = Future {
+    println("Consumer doing initial work")
+    Thread.sleep(500)
+    f onSuccess {
+      case r => println(s"Consumer harvested future: $r")
+    }
+    f onFailure {
+      case ex => println(s"Consumer harvested failure: $ex")
+    }
+  }
+
+  Thread.sleep(2000)
+}
