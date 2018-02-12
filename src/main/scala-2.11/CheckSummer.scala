@@ -2,7 +2,7 @@
   * Created by petec on 7/31/16.
   * Example from Odersky, Spoon, Venners, Chapter 4.
   */
-import scala.collection.mutable.Map
+import scala.collection.mutable
 
 class ChecksumAccumulator {
   private var sum = 0
@@ -12,12 +12,14 @@ class ChecksumAccumulator {
 
 object ChecksumAccumulator {
 
-  private val cache = Map[String, Int]()
+  private val cache = mutable.Map[String, Int]()
 
   def calculate(s: String): Int =
-    if (cache.contains(s))
+    if (cache.contains(s)) {
+      println(s"Cache hit for '$s'")
       cache(s)
-    else {
+    } else {
+      println(s"Cache miss for '$s'")
       val acc = new ChecksumAccumulator
       for (c <- s)
         acc.add(c.toByte)

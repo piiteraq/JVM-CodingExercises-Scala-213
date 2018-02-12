@@ -56,7 +56,7 @@ object MergeSort {
     if (n == 0) xs // No work to do
     else {
       val (ys, zs) = xs splitAt n
-      merge(orderedMergeSort(ys), orderedMergeSort(zs))
+      merge(viewBoundMergeSort(ys), viewBoundMergeSort(zs))
     }
   }
 
@@ -64,10 +64,10 @@ object MergeSort {
   def main(args: Array[String]) = {
     def less(a: Int, b: Int) = if (a <= b) true else false
     val lst = List(23, 5, 100, 2, 9, 45, 1)
-    val res = msort(less)(lst)
-    println(res)
-    val res1 = orderedMergeSort[Int](lst)
-    println(res1)
+//    val res = msort(less)(lst)
+//    println(res)
+//    val res1 = orderedMergeSort[Int](lst)
+//    println(res1)
     val res2 = viewBoundMergeSort[Int](lst)
     println(res2)
   }
