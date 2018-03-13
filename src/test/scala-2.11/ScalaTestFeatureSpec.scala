@@ -1,4 +1,6 @@
-import org.scalatest._
+import org.scalatest.{FeatureSpec, GivenWhenThen}
+
+//import scala.scalatest._
 
 class TVSet {
   private var on: Boolean = false
