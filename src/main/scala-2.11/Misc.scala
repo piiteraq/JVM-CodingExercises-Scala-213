@@ -1,8 +1,9 @@
+import scala.annotation.tailrec
+
 object Misc {
 
   def isPalindrome(s: String): Boolean = {
-    if (s.length == 0 ) return false
-    else if (s.length == 1) return true
+    if (s.length <= 1) return true
     else {
       var l = 0
       var r = s.length - 1
@@ -14,6 +15,7 @@ object Misc {
     }
   }
 
+  @tailrec
   def isPalRec(s: String): Boolean = {
     if (s.length <= 1) true
     else if (s(0) != s(s.length-1)) false
@@ -22,14 +24,17 @@ object Misc {
 
 
   def main(args: Array[String]) = {
+    println(isPalindrome(""))
+    println(isPalindrome("a"))
     println(isPalindrome("madamadam"))
     println(isPalindrome("qwerrewq"))
     println(isPalindrome("qwer"))
-
+    println("----------")
+    println(isPalRec(""))
+    println(isPalRec("a"))
     println(isPalRec("madamadam"))
     println(isPalRec("qwerrewq"))
     println(isPalRec("qwer"))
-
   }
 
 }
