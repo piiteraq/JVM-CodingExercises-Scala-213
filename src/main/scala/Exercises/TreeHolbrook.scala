@@ -1,3 +1,7 @@
+package Exercises
+
+import scala.language.postfixOps
+
 /**
   * D Holbrook
   *
@@ -311,7 +315,7 @@ object RunTree extends App {
     e <- d.right
     x <- e.right
     value <- x.value
-  } println("X node SHOUL NOT PRINT!: " + value)
+  } println("X node SHOULD NOT PRINT!: " + value)
 
   println("as seq: " + t.toSeq)
 

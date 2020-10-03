@@ -1,3 +1,5 @@
+package Exercises
+
 /**
   * Created by petec on 7/31/16.
   * Example from Odersky, Spoon, Venners, Chapter 4.

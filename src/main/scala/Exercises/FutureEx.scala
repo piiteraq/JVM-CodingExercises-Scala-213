@@ -1,12 +1,15 @@
+package Exercises
+
 /**
   * Created by petec on 8/7/16.
   */
 
-import concurrent.ExecutionContext.Implicits.global
-import concurrent.{Await, Future}
-import concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent._ //{Await, Future}
+import scala.concurrent.duration._
 import util.{Failure, Success}
 import util.Random
+import scala.language.postfixOps
 
 object FutureBlock extends App {
 
@@ -60,12 +63,14 @@ object FutureOnSuccessAndFailure extends App {
     if (Random.nextInt(500) > 250) throw new Exception("Yikes!") else 42
   }
 
-  f onSuccess {
-    case result => println(s"Success: $result")
+  f onComplete {
+    case Success(result) => println(s"Success: $result")
+    case Failure(t) => println("An error has occurred: " + t.getMessage)
   }
 
-  f onFailure {
-    case t => println(s"Exception: ${t.getMessage}")
+  f onComplete {
+    case Success(_) =>
+    case Failure(t) => println(s"Exception: ${t.getMessage}")
   }
 
   // Do rest of work ..
@@ -124,8 +129,9 @@ object MultiParallelTasks extends App {
   } yield r1+r2+r3
 
   println("Before onSuccess")
-  result.onSuccess {
-    case result => println(s"total = $result")
+  result onComplete  {
+    case Success(value) => println(s"total = $value")
+    case Failure(t) => println(s"Failed: ${t}")
   }
 
   println("Before sleep at the end")
@@ -150,11 +156,14 @@ object PromiseExample extends App {
   val consumer = Future {
     println("Consumer doing initial work")
     Thread.sleep(500)
-    f onSuccess {
-      case r => println(s"Consumer harvested future: $r")
+    f onComplete {
+      case Success(r) => println(s"Consumer harvested future: $r")
+      case Failure(t) => println(t)
+
     }
-    f onFailure {
-      case ex => println(s"Consumer harvested failure: $ex")
+    f onComplete {
+      case Failure(ex) => println(s"Consumer harvested failure: $ex")
+      case _ =>
     }
   }
 

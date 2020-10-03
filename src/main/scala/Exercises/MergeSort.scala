@@ -1,3 +1,5 @@
+package Exercises
+
 object MergeSort {
 
   def msort[T](less: (T,T) => Boolean)(xs: List[T]): List[T] = {
@@ -40,8 +42,7 @@ object MergeSort {
     }
   }
 
-  def viewBoundMergeSort[T <% Ordered[T]](xs: List[T]): List[T] = {
-
+  def viewBoundMergeSort[T](xs: List[T])(implicit ev: T => Ordered[T]): List[T] = {
     def merge(xs: List[T], ys: List[T]): List[T] = {
       (xs, ys) match {
         case (Nil, _) => ys

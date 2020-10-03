@@ -17,6 +17,7 @@ class Graph {
         }
     }
 
+    @SuppressWarnings("unchecked")
     Graph gclone() {
         Node[] nodesClon = nodes.clone();
 

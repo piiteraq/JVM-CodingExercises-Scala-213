@@ -1,5 +1,8 @@
+package Exercises
+
 import scala.collection.mutable
-import scala.collection.mutable.SynchronizedMap
+import java.util.concurrent.ConcurrentHashMap
+import scala.language.postfixOps
 
 case class User(name: String, id: Int)
 
@@ -11,11 +14,11 @@ class InvertedIndex(val userMap: mutable.Map[String, User]) {
     name.split(" ").map(_.toLowerCase)
   }
 
-  def add(term: String, user: User) {
+  def add(term: String, user: User) = {
     userMap += term -> user
   }
 
-  def add(user: User) {
+  def add(user: User): Unit = {
     // TokenizeName was measured to be the most expensive operation.
     val tokens = tokenizeName(user.name)
 

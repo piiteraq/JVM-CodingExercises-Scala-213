@@ -1,3 +1,5 @@
+package Exercises
+
 /**
   * Created by petec on 8/15/16.
   * From Odersky, Chapt 20, pp.432-442

@@ -1,3 +1,5 @@
+package Exercises
+
 /**
   * Created by petec on 8/1/16.
   * Example from Odersky, Spoon, Venners, Chapter 6.
@@ -43,7 +45,7 @@ class Rational(n: Int, d: Int) {
   def / (i: Int): Rational =
     new Rational(numer, denom * i)
 
-  override def toString = numer + "/" + denom
+  override def toString = s"$numer/$denom"
 
   private def gcd(a: Int, b: Int): Int =
     if (b == 0) a else gcd(b, a % b)

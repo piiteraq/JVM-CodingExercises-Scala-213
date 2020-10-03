@@ -1,3 +1,5 @@
+package Exercises
+
 import scala.annotation.tailrec
 
 object Misc {

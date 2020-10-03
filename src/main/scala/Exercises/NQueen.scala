@@ -1,3 +1,7 @@
+package Exercises
+
+import scala.language.postfixOps
+
 /**
   * Created by petec on 8/13/16.
   * From Odersky, pp.483-486
@@ -26,10 +30,21 @@ object NQueen {
     placeQueens(n)
   }
 
+  def show(queens: List[Int]) = {
+    val lines =
+      for (col <- queens.reverse)
+        yield Vector.fill(queens.length)("* ").updated(col, "X ").mkString
+    "\n" + (lines mkString "\n")
+  }
+
   def main(args: Array[String]) = {
     for (x <- queens(5) zipWithIndex) {
       println(s"Sol ${x._2}: ${x._1 reverse}")
     }
+//    val foo = for {
+//      x <- queens(5)
+//      (r, c) <- x
+//    } yield c
   }
 
 }

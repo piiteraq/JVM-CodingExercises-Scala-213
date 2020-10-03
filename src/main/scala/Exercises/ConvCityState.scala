@@ -1,3 +1,5 @@
+package Exercises
+
 /**
   * Created by petec on 8/11/16.
   */
