@@ -1,4 +1,4 @@
-name := "CodingExercises"
+name := "Scala 2.13 Coding Exercises"
 
 version := "1.0"
 
