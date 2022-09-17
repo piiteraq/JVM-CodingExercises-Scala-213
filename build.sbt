@@ -9,3 +9,4 @@ resolvers ++= Resolver.sonatypeOssRepos("snapshots")
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.8"
 libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.3"
+libraryDependencies += "org.typelevel" %% "cats-core" % "2.8.0"
